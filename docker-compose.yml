@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: stylebox-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: stylebox
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - stylebox-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stylebox-backend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongodb:27017/stylebox
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - stylebox-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  stylebox-network:
+    driver: bridge
