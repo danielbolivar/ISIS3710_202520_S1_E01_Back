@@ -54,7 +54,7 @@ export class CollectionsService {
         const itemsCount = await this.collectionItemModel.countDocuments({
           collectionId: collection._id,
         });
-        
+
         console.log(`🔍 [DEBUG] Collection "${collection.title}" (${collection._id}): itemsCount = ${itemsCount}`);
 
         return {
