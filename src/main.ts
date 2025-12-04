@@ -10,9 +10,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
-    credentials: true,
-  });
+  origin: [/localhost:\d+$/], // acepta cualquier http://localhost:xxxx
+  credentials: true,
+});
+
 
   app.setGlobalPrefix('api');
 
