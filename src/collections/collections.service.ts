@@ -144,17 +144,28 @@ export class CollectionsService {
     userId: string,
     postId: string,
   ): Promise<any> {
+    console.log('🔍 addPost called:');
+    console.log('  collectionId:', collectionId);
+    console.log('  userId (from JWT):', userId, 'type:', typeof userId);
+
     const collection = await this.collectionModel.findById(collectionId);
 
     if (!collection) {
       throw new NotFoundException('Collection not found');
     }
 
+    console.log('  collection.userId:', collection.userId, 'type:', typeof collection.userId);
+    console.log('  collection.userId.toString():', collection.userId.toString());
+    console.log('  Comparison:', collection.userId.toString(), '===', userId, '?', collection.userId.toString() === userId);
+
     if (collection.userId.toString() !== userId) {
+      console.log('❌ FORBIDDEN: userId mismatch');
       throw new ForbiddenException(
         'You can only add posts to your own collections',
       );
     }
+
+    console.log('✅ userId matches, proceeding...');
 
     const post = await this.postModel.findById(postId);
     if (!post) {
